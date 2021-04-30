@@ -6,5 +6,5 @@ type Data struct {
 }
 
 func (d Data) Flattify() string {
-	return d.Typ + "." + d.Name
+	return "data." + d.Typ + "." + d.Name
 }
