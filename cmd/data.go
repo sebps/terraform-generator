@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 Seb P sebpsdev@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,11 +29,14 @@ var dataConfiguration string
 // dataCmd represents the data command
 var dataCmd = &cobra.Command{
 	Use:   "data",
-	Short: "Generate a terraform data",
-	Long: `Generate a terraform data customized according to the flags.
-By default the data is appended in the main.tf file of the current directory 
+	Short: "Generate a terraform data block into a configuration file",
+	Long: `
+Generate a terraform data block customized according to the flags. By default the data block is appended in the main.tf file of the current directory. 
+
 For example:
+
 terraform-generator data --type=aws_s3_bucket --name=static_website_bucket --module=modules/instance-configuration --configuration=main
+
 This command will append a data block of type "aws_s3_bucket" and name "static_website_bucket" at the end of the modules/instance-configuration/main.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
 		data := &templates.Data{}
@@ -72,10 +75,10 @@ func init() {
 	generateCmd.AddCommand(dataCmd)
 
 	// Here you will define your flags and configuration settings.
-	dataCmd.Flags().StringVarP(&dataDir, "dir", "d", "", "Directory of the configuration file where to append the data in (default current dir)")
-	dataCmd.Flags().StringVarP(&dataName, "name", "n", "", "Name of the data (required)")
-	dataCmd.Flags().StringVarP(&dataType, "type", "t", "", "Type of the data (required")
-	dataCmd.Flags().StringVarP(&dataConfiguration, "configuration", "c", "", "Configuration file where to append the data (default main.tf)")
+	dataCmd.Flags().StringVarP(&dataDir, "dir", "d", "", "directory of the configuration file where to append the data in (default is current dir)")
+	dataCmd.Flags().StringVarP(&dataName, "name", "n", "", "name of the data (required)")
+	dataCmd.Flags().StringVarP(&dataType, "type", "t", "", "type of the data (required")
+	dataCmd.Flags().StringVarP(&dataConfiguration, "configuration", "c", "", "configuration file where to append the data (default is main.tf)")
 	dataCmd.MarkFlagRequired("name")
 	dataCmd.MarkFlagRequired("type")
 }

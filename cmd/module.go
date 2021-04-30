@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 Seb P
+Copyright © 2021 Seb P sebpsdev@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,10 +27,19 @@ var moduleName string
 var moduleCmd = &cobra.Command{
 	Use:   "module",
 	Short: "Generate and setup a terraform module directory",
-	Long: `Generate a terraform module directory containing a boilerplate module customized according to the flags.
+	Long: `
+Generate a terraform module directory containing a boilerplate module.
+
 For example:
+
 terraform-generator module --dir=modules --name=instance-configuration
-This command will generate a modules/instance-configuration directory including the following files README.md, main.tf, outputs.tf, variables.tf and terraform.tf.`,
+
+This command will generate a modules/instance-configuration directory including the following files :
+- README.md
+- main.tf
+- outputs.tf
+- variables.tf 
+- terraform.tf`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var files = []string{
 			"README.md",
@@ -63,7 +72,7 @@ This command will generate a modules/instance-configuration directory including 
 func init() {
 	generateCmd.AddCommand(moduleCmd)
 	// Here you will define your flags and configuration settings.
-	moduleCmd.Flags().StringVarP(&moduleDir, "dir", "d", "", "Parent Directory to generate the module in (default current dir)")
-	moduleCmd.Flags().StringVarP(&moduleName, "name", "n", "", "Name of the module directory (required)")
+	moduleCmd.Flags().StringVarP(&moduleDir, "dir", "d", "", "parent Directory to generate the module in (default is current dir)")
+	moduleCmd.Flags().StringVarP(&moduleName, "name", "n", "", "name of the module directory (required)")
 	moduleCmd.MarkFlagRequired("name")
 }

@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 Seb P sebpsdev@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,11 +28,16 @@ var variableType string
 // variableCmd represents the variable command
 var variableCmd = &cobra.Command{
 	Use:   "variable",
-	Short: "Generate a terraform variable block ",
-	Long: `Generate a variable block customized according to the flags.
-	By default the variable is appended in the variables.tf file of the current directory 
+	Short: "Generate a terraform variable block into a configuration file",
+	Long: `
+Generate a variable block into a configuration file.
+
+By default the variable is appended in the variables.tf file of the current directory 
+
 For example:
+
 terraform-generator variable --name=instance_name --type=string --dir=modules/instance-configuration
+
 This command will append a variable block with name instance_name and type string at the end of the modules/instance-configuration/variables.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
 		variable := &templates.Variable{}
@@ -67,9 +72,9 @@ func init() {
 	generateCmd.AddCommand(variableCmd)
 
 	// Here you will define your flags and configuration settings.
-	variableCmd.Flags().StringVarP(&variableDir, "dir", "d", "", "Directory of the variables.tf file where to append the variable in (default current dir)")
-	variableCmd.Flags().StringVarP(&variableName, "name", "n", "", "Name of the variable (required)")
-	variableCmd.Flags().StringVarP(&variableType, "type", "t", "", "Type of the variable (required)")
+	variableCmd.Flags().StringVarP(&variableDir, "dir", "d", "", "directory of the variables.tf file where to append the variable in (default is current dir)")
+	variableCmd.Flags().StringVarP(&variableName, "name", "n", "", "name of the variable (required)")
+	variableCmd.Flags().StringVarP(&variableType, "type", "t", "", "type of the variable (required)")
 	variableCmd.MarkFlagRequired("name")
 	variableCmd.MarkFlagRequired("type")
 }

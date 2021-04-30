@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 Seb P sebpsdev@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,11 +29,16 @@ var resourceConfiguration string
 // resourceCmd represents the resource command
 var resourceCmd = &cobra.Command{
 	Use:   "resource",
-	Short: "Generate a terraform resource",
-	Long: `Generate a terraform resource customized according to the flags.
+	Short: "Generate a terraform resource into a configuration file",
+	Long: `
+Generate a terraform resource block into a configuration file.
+
 By default the resource is appended in the main.tf file of the current directory 
+
 For example:
+
 terraform-generator resource --type=aws_s3_bucket --name=static_website_bucket --module=modules/instance-configuration --configuration=main
+
 This command will append a resource block of type "aws_s3_bucket" and name "static_website_bucket" at the end of the modules/instance-configuration/main.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
 		resource := &templates.Resource{}
@@ -72,10 +77,10 @@ func init() {
 	generateCmd.AddCommand(resourceCmd)
 
 	// Here you will define your flags and configuration settings.
-	resourceCmd.Flags().StringVarP(&resourceDir, "dir", "d", "", "Directory of the configuration file where to append the resource in (default current dir)")
-	resourceCmd.Flags().StringVarP(&resourceName, "name", "n", "", "Name of the resource (required)")
-	resourceCmd.Flags().StringVarP(&resourceType, "type", "t", "", "Type of the resource (required")
-	resourceCmd.Flags().StringVarP(&resourceConfiguration, "configuration", "c", "", "Configuration file where to append the resource (default main.tf)")
+	resourceCmd.Flags().StringVarP(&resourceDir, "dir", "d", "", "directory of the configuration file where to append the resource in (default is current dir)")
+	resourceCmd.Flags().StringVarP(&resourceName, "name", "n", "", "name of the resource (required)")
+	resourceCmd.Flags().StringVarP(&resourceType, "type", "t", "", "type of the resource (required")
+	resourceCmd.Flags().StringVarP(&resourceConfiguration, "configuration", "c", "", "Configuration file where to append the resource (default is main.tf)")
 	resourceCmd.MarkFlagRequired("name")
 	resourceCmd.MarkFlagRequired("type")
 }

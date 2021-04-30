@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 Seb P sebpsdev@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -25,17 +23,8 @@ import (
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate a terraform component",
-	Long: `Generate the terraform component in argument and customize it with the following flags
-For example:
-terraform-generator generate module --dir=modules --name=instance-configuration 
-terraform-generator generate output --module=modules/instance-configuration --name=instance_ip_address --value=module.instance_configuration.ip
-terraform-generator generate variable --name=instance_name --type=string --module=modules/instance-configuration
-terraform-generator generate configuration --name=network --module=modules/instance-configuration
-terraform-generator generate resource --type=aws_s3_bucket --name=static_website_bucket --module=modules/instance-configuration --configuration=main
+	Long: `Generate the terraform component passed in argument.
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("generate called")
-	},
 }
 
 func init() {
