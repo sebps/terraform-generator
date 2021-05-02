@@ -47,9 +47,6 @@ terraform-generator generate resource --type=aws_ec2 --name=server_instance --di
 
 terraform-generator generate data --type=aws_region --name=current_region --dir=test/modules/instance-configuration --configuration=data
 `,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

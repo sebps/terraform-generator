@@ -16,12 +16,12 @@ limitations under the License.
 package cmd
 
 import (
+	"github.com/sebps/terraform-generator/commands"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-var moduleDir string
-var moduleName string
+var moduleCommand *commands.Module = &commands.Module{}
 
 // moduleCmd represents the module command
 var moduleCmd = &cobra.Command{
@@ -41,24 +41,17 @@ This command will generate a modules/instance-configuration directory including 
 - variables.tf 
 - terraform.tf`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var files = []string{
-			"README.md",
-			"main.tf",
-			"variables.tf",
-			"outputs.tf",
-			"terraform.tf",
+		if moduleCommand.Dir == "" {
+			moduleCommand.Dir = "."
 		}
 
-		if moduleDir == "" {
-			moduleDir = "."
-		}
-
-		modulePath := moduleDir + "/" + moduleName
+		modulePath := moduleCommand.Dir + "/" + moduleCommand.Name
 		err := os.MkdirAll(modulePath, 0755)
 		if err != nil {
 			panic(err)
 		}
 
+		files := moduleCommand.GetFiles()
 		for _, f := range files {
 			path := modulePath + "/" + f
 			_, err := os.Create(path)
@@ -72,7 +65,15 @@ This command will generate a modules/instance-configuration directory including 
 func init() {
 	generateCmd.AddCommand(moduleCmd)
 	// Here you will define your flags and configuration settings.
-	moduleCmd.Flags().StringVarP(&moduleDir, "dir", "d", "", "parent Directory to generate the module in (default is current dir)")
-	moduleCmd.Flags().StringVarP(&moduleName, "name", "n", "", "name of the module directory (required)")
+	moduleCmd.Flags().StringVarP(&moduleCommand.Dir, "dir", "d", "", "parent Directory to generate the module in (default is current dir)")
+	moduleCmd.Flags().StringVarP(&moduleCommand.Name, "name", "n", "", "name of the module directory (required)")
+
+	moduleCmd.MarkFlagDirname("dir")
 	moduleCmd.MarkFlagRequired("name")
+
+	for _, f := range moduleCommand.GetCommandFlags() {
+		if moduleCommand.GetFlagCompletion(f) != nil {
+			moduleCmd.RegisterFlagCompletionFunc(f, moduleCommand.GetFlagCompletion(f))
+		}
+	}
 }

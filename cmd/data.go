@@ -16,15 +16,13 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sebpsdev/terraform-generator/templates"
+	"github.com/sebps/terraform-generator/commands"
+	"github.com/sebps/terraform-generator/templates"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-var dataDir string
-var dataType string
-var dataName string
-var dataConfiguration string
+var dataCommand *commands.Data = &commands.Data{}
 
 // dataCmd represents the data command
 var dataCmd = &cobra.Command{
@@ -41,25 +39,25 @@ This command will append a data block of type "aws_s3_bucket" and name "static_w
 	Run: func(cmd *cobra.Command, args []string) {
 		data := &templates.Data{}
 		dArgs := map[string]string{
-			"name": dataName,
-			"type": dataType,
+			"name": dataCommand.Name,
+			"type": dataCommand.Typ,
 		}
 		dataBlock := data.Parse(dArgs)
 
-		if dataDir == "" {
-			dataDir = "."
+		if dataCommand.Dir == "" {
+			dataCommand.Dir = "."
 		}
 
-		if dataConfiguration == "" {
-			dataConfiguration = "main"
+		if dataCommand.Configuration == "" {
+			dataCommand.Configuration = "main"
 		}
 
-		err := os.MkdirAll(dataDir, 0755)
+		err := os.MkdirAll(dataCommand.Dir, 0755)
 		if err != nil {
 			panic(err)
 		}
 
-		p := dataDir + "/" + dataConfiguration + ".tf"
+		p := dataCommand.Dir + "/" + dataCommand.Configuration + ".tf"
 		f, err := os.OpenFile(p, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			panic(err)
@@ -75,10 +73,18 @@ func init() {
 	generateCmd.AddCommand(dataCmd)
 
 	// Here you will define your flags and configuration settings.
-	dataCmd.Flags().StringVarP(&dataDir, "dir", "d", "", "directory of the configuration file where to append the data in (default is current dir)")
-	dataCmd.Flags().StringVarP(&dataName, "name", "n", "", "name of the data (required)")
-	dataCmd.Flags().StringVarP(&dataType, "type", "t", "", "type of the data (required")
-	dataCmd.Flags().StringVarP(&dataConfiguration, "configuration", "c", "", "configuration file where to append the data (default is main.tf)")
+	dataCmd.Flags().StringVarP(&dataCommand.Dir, "dir", "d", "", "directory of the configuration file where to append the data in (default is current dir)")
+	dataCmd.Flags().StringVarP(&dataCommand.Name, "name", "n", "", "name of the data (required)")
+	dataCmd.Flags().StringVarP(&dataCommand.Typ, "type", "t", "", "type of the data (required")
+	dataCmd.Flags().StringVarP(&dataCommand.Configuration, "configuration", "c", "", "configuration file where to append the data (default is main.tf)")
+
+	dataCmd.MarkFlagDirname("dir")
 	dataCmd.MarkFlagRequired("name")
 	dataCmd.MarkFlagRequired("type")
+
+	for _, f := range dataCommand.GetCommandFlags() {
+		if dataCommand.GetFlagCompletion(f) != nil {
+			dataCmd.RegisterFlagCompletionFunc(f, dataCommand.GetFlagCompletion(f))
+		}
+	}
 }

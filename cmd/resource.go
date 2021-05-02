@@ -16,15 +16,13 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sebpsdev/terraform-generator/templates"
+	"github.com/sebps/terraform-generator/commands"
+	"github.com/sebps/terraform-generator/templates"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-var resourceDir string
-var resourceType string
-var resourceName string
-var resourceConfiguration string
+var resourceCommand *commands.Resource = &commands.Resource{}
 
 // resourceCmd represents the resource command
 var resourceCmd = &cobra.Command{
@@ -43,25 +41,25 @@ This command will append a resource block of type "aws_s3_bucket" and name "stat
 	Run: func(cmd *cobra.Command, args []string) {
 		resource := &templates.Resource{}
 		rArgs := map[string]string{
-			"name": resourceName,
-			"type": resourceType,
+			"name": resourceCommand.Name,
+			"type": resourceCommand.Typ,
 		}
 		resourceBlock := resource.Parse(rArgs)
 
-		if resourceDir == "" {
-			resourceDir = "."
+		if resourceCommand.Dir == "" {
+			resourceCommand.Dir = "."
 		}
 
-		if resourceConfiguration == "" {
-			resourceConfiguration = "main"
+		if resourceCommand.Configuration == "" {
+			resourceCommand.Configuration = "main"
 		}
 
-		err := os.MkdirAll(resourceDir, 0755)
+		err := os.MkdirAll(resourceCommand.Dir, 0755)
 		if err != nil {
 			panic(err)
 		}
 
-		p := resourceDir + "/" + resourceConfiguration + ".tf"
+		p := resourceCommand.Dir + "/" + resourceCommand.Configuration + ".tf"
 		f, err := os.OpenFile(p, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			panic(err)
@@ -77,10 +75,18 @@ func init() {
 	generateCmd.AddCommand(resourceCmd)
 
 	// Here you will define your flags and configuration settings.
-	resourceCmd.Flags().StringVarP(&resourceDir, "dir", "d", "", "directory of the configuration file where to append the resource in (default is current dir)")
-	resourceCmd.Flags().StringVarP(&resourceName, "name", "n", "", "name of the resource (required)")
-	resourceCmd.Flags().StringVarP(&resourceType, "type", "t", "", "type of the resource (required")
-	resourceCmd.Flags().StringVarP(&resourceConfiguration, "configuration", "c", "", "Configuration file where to append the resource (default is main.tf)")
+	resourceCmd.Flags().StringVarP(&resourceCommand.Dir, "dir", "d", "", "directory of the configuration file where to append the resource in (default is current dir)")
+	resourceCmd.Flags().StringVarP(&resourceCommand.Name, "name", "n", "", "name of the resource (required)")
+	resourceCmd.Flags().StringVarP(&resourceCommand.Typ, "type", "t", "", "type of the resource (required")
+	resourceCmd.Flags().StringVarP(&resourceCommand.Configuration, "configuration", "c", "", "Configuration file where to append the resource (default is main.tf)")
+
+	resourceCmd.MarkFlagDirname("dir")
 	resourceCmd.MarkFlagRequired("name")
 	resourceCmd.MarkFlagRequired("type")
+
+	for _, f := range resourceCommand.GetCommandFlags() {
+		if resourceCommand.GetFlagCompletion(f) != nil {
+			resourceCmd.RegisterFlagCompletionFunc(f, resourceCommand.GetFlagCompletion(f))
+		}
+	}
 }

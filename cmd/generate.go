@@ -16,8 +16,11 @@ limitations under the License.
 package cmd
 
 import (
+	"github.com/sebps/terraform-generator/commands"
 	"github.com/spf13/cobra"
 )
+
+var c *commands.Generate = &commands.Generate{}
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
@@ -25,6 +28,8 @@ var generateCmd = &cobra.Command{
 	Short: "Generate a terraform component",
 	Long: `Generate the terraform component passed in argument.
 `,
+	ValidArgs: c.GetCommandNoons(),
+	// ValidArgsFunction: c.GetNoonCompletion(),
 }
 
 func init() {

@@ -16,14 +16,13 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sebpsdev/terraform-generator/templates"
+	"github.com/sebps/terraform-generator/commands"
+	"github.com/sebps/terraform-generator/templates"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-var variableDir string
-var variableName string
-var variableType string
+var variableCommand *commands.Variable = &commands.Variable{}
 
 // variableCmd represents the variable command
 var variableCmd = &cobra.Command{
@@ -40,29 +39,29 @@ terraform-generator variable --name=instance_name --type=string --dir=modules/in
 
 This command will append a variable block with name instance_name and type string at the end of the modules/instance-configuration/variables.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
-		variable := &templates.Variable{}
+		variableTemplate := &templates.Variable{}
 		arguments := map[string]string{
-			"name": variableName,
-			"type": variableType,
+			"name": variableCommand.Name,
+			"type": variableCommand.Typ,
 		}
-		variableBlock := variable.Parse(arguments)
+		variableBlock := variableTemplate.Parse(arguments)
 
-		if variableDir == "" {
-			variableDir = "."
+		if variableCommand.Dir == "" {
+			variableCommand.Dir = "."
 		}
 
-		err := os.MkdirAll(variableDir, 0755)
+		err := os.MkdirAll(variableCommand.Dir, 0755)
 		if err != nil {
 			panic(err)
 		}
 
-		p := variableDir + "/variables.tf"
+		p := variableCommand.Dir + "/variables.tf"
 		f, err := os.OpenFile(p, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			panic(err)
 		}
 		defer f.Close()
-		if _, err := f.WriteString(variableBlock + "\n"); err != nil {
+		if _, err := f.WriteString(variableBlock + "\n\n"); err != nil {
 			panic(err)
 		}
 	},
@@ -72,9 +71,17 @@ func init() {
 	generateCmd.AddCommand(variableCmd)
 
 	// Here you will define your flags and configuration settings.
-	variableCmd.Flags().StringVarP(&variableDir, "dir", "d", "", "directory of the variables.tf file where to append the variable in (default is current dir)")
-	variableCmd.Flags().StringVarP(&variableName, "name", "n", "", "name of the variable (required)")
-	variableCmd.Flags().StringVarP(&variableType, "type", "t", "", "type of the variable (required)")
+	variableCmd.Flags().StringVarP(&variableCommand.Dir, "dir", "d", "", "directory of the variables.tf file where to append the variable in (default is current dir)")
+	variableCmd.Flags().StringVarP(&variableCommand.Name, "name", "n", "", "name of the variable (required)")
+	variableCmd.Flags().StringVarP(&variableCommand.Typ, "type", "t", "", "type of the variable (required)")
+
+	variableCmd.MarkFlagDirname("dir")
 	variableCmd.MarkFlagRequired("name")
 	variableCmd.MarkFlagRequired("type")
+
+	for _, f := range variableCommand.GetCommandFlags() {
+		if variableCommand.GetFlagCompletion(f) != nil {
+			variableCmd.RegisterFlagCompletionFunc(f, variableCommand.GetFlagCompletion(f))
+		}
+	}
 }

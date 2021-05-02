@@ -62,5 +62,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	configurationCmd.Flags().StringVarP(&configurationDir, "dir", "d", "", "directory to generate the configuration in (default is current dir)")
 	configurationCmd.Flags().StringVarP(&configurationName, "name", "n", "", "name of the configuration (required)")
+
+	configurationCmd.MarkFlagDirname("dir")
 	configurationCmd.MarkFlagRequired("name")
 }

@@ -16,13 +16,13 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sebpsdev/terraform-generator/command"
-	"github.com/sebpsdev/terraform-generator/templates"
+	"github.com/sebps/terraform-generator/commands"
+	"github.com/sebps/terraform-generator/templates"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-var c *command.Output = &command.Output{}
+var outputCommand *commands.Output = &commands.Output{}
 
 // outputCmd represents the output command
 var outputCmd = &cobra.Command{
@@ -41,21 +41,21 @@ This command will append an output block with name instance_ip_address and value
 	Run: func(cmd *cobra.Command, args []string) {
 		output := &templates.Output{}
 		oArgs := map[string]string{
-			"name":  c.Name,
-			"value": c.Value,
+			"name":  outputCommand.Name,
+			"value": outputCommand.Value,
 		}
 		outputBlock := output.Parse(oArgs)
 
-		if c.Dir == "" {
-			c.Dir = "."
+		if outputCommand.Dir == "" {
+			outputCommand.Dir = "."
 		}
 
-		err := os.MkdirAll(c.Dir, 0755)
+		err := os.MkdirAll(outputCommand.Dir, 0755)
 		if err != nil {
 			panic(err)
 		}
 
-		p := c.Dir + "/outputs.tf"
+		p := outputCommand.Dir + "/outputs.tf"
 		f, err := os.OpenFile(p, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			panic(err)
@@ -72,14 +72,16 @@ func init() {
 	generateCmd.AddCommand(outputCmd)
 
 	// Here you will define your flags and configuration settings.
-	outputCmd.Flags().StringVarP(&c.Dir, "dir", "d", "", "directory of the outputs.tf file where to append the output in (default is current dir)")
-	outputCmd.Flags().StringVarP(&c.Name, "name", "n", "", "name of the output (required)")
-	outputCmd.Flags().StringVarP(&c.Value, "value", "v", "", "value of the output ( default is \"\" ) ")
+	outputCmd.Flags().StringVarP(&outputCommand.Dir, "dir", "d", "", "directory of the outputs.tf file where to append the output in (default is current dir)")
+	outputCmd.Flags().StringVarP(&outputCommand.Name, "name", "n", "", "name of the output (required)")
+	outputCmd.Flags().StringVarP(&outputCommand.Value, "value", "v", "", "value of the output ( default is \"\" ) ")
+
+	outputCmd.MarkFlagDirname("dir")
 	outputCmd.MarkFlagRequired("name")
 
-	for _, f := range c.GetCommandFlags() {
-		if c.GetFlagCompletion(f) != nil {
-			outputCmd.RegisterFlagCompletionFunc(f, c.GetFlagCompletion(f))
+	for _, f := range outputCommand.GetCommandFlags() {
+		if outputCommand.GetFlagCompletion(f) != nil {
+			outputCmd.RegisterFlagCompletionFunc(f, outputCommand.GetFlagCompletion(f))
 		}
 	}
 }
