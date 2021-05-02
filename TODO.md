@@ -6,3 +6,9 @@
   - output : dir.output.name
   - resource : dir.configuration.type.name
   - variable : dir.var.name
+
+- Implement completion for following flags
+  - resource : 
+    - type : Fetch providers and resources 
+  - data :
+    - type : Fetch providers and data
