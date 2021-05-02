@@ -1,7 +1,7 @@
-package command
+package commands
 
 import (
-	"github.com/sebpsdev/terraform-generator/util"
+	"github.com/sebps/terraform-generator/util"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -14,6 +14,10 @@ type Output struct {
 
 func (o *Output) GetCommandName() string {
 	return "output"
+}
+
+func (o *Output) GetCommandNoons() []string {
+	return []string{}
 }
 
 func (o *Output) GetCommandFlags() []string {
@@ -34,8 +38,8 @@ func (o *Output) GetNoonCompletion() func(*cobra.Command, []string, string) ([]s
 }
 
 func (o *Output) valueCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	var dir string
 	var results []string
+	var dir string
 
 	dir = "."
 	if o.Dir != "" {
@@ -69,7 +73,7 @@ func (o *Output) valueCompletion(cmd *cobra.Command, args []string, toComplete s
 				switch len(typed) {
 				case 2:
 					if strings.HasPrefix(v.Name, typed[1]) {
-						results = append(results, v.Flattify())
+						results = append(results, v.Name)
 					}
 				default:
 				}
@@ -79,7 +83,7 @@ func (o *Output) valueCompletion(cmd *cobra.Command, args []string, toComplete s
 				switch len(typed) {
 				case 2:
 					if strings.HasPrefix(m.Name, typed[1]) {
-						results = append(results, m.Flattify())
+						results = append(results, m.Name)
 					}
 				default:
 				}
@@ -88,12 +92,12 @@ func (o *Output) valueCompletion(cmd *cobra.Command, args []string, toComplete s
 			switch len(typed) {
 			case 0:
 				for _, t := range c.ResourceTypes {
-					results = append(results, t.Flattify())
+					results = append(results, t.Name)
 				}
 			case 1:
 				for _, t := range c.ResourceTypes {
 					if strings.HasPrefix(t.Name, typed[0]) {
-						results = append(results, t.Flattify())
+						results = append(results, t.Name)
 					}
 				}
 			case 2:
