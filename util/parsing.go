@@ -2,8 +2,8 @@ package util
 
 import (
 	"bufio"
-	"github.com/sebpsdev/golibs/generic/maps"
-	"github.com/sebpsdev/terraform-generator/types"
+	"github.com/sebps/golibs/generic/maps"
+	"github.com/sebps/terraform-generator/types"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -12,7 +12,10 @@ import (
 )
 
 func ParseConfiguration(configurationPath string) *types.Configuration {
-	configuration := &types.Configuration{}
+	configuration := &types.Configuration{
+		Name: filepath.Base(configurationPath),
+		Dir:  filepath.Dir(configurationPath),
+	}
 	resourceTypesMap := make(map[string]*types.Type)
 	dataTypesMap := make(map[string]*types.Type)
 
