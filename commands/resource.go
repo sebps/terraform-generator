@@ -5,6 +5,7 @@ package commands
 
 import (
 	"github.com/sebps/terraform-generator/parsing"
+	"github.com/sebps/terraform-generator/terraform"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -66,9 +67,14 @@ func (r *Resource) configurationCompletion(cmd *cobra.Command, args []string, to
 
 func (r *Resource) typeCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var results []string
-	// typed := strings.Split(toComplete, ".")
-
-	// TODO: Fetch providers and resources
+	providerSchemas := terraform.GetProviderSchemas()
+	for _, p := range providerSchemas {
+		for _, r := range p.Resources {
+			if strings.HasPrefix(r.Name, toComplete) {
+				results = append(results, r.Name)
+			}
+		}
+	}
 
 	return results, cobra.ShellCompDirectiveDefault
 }
