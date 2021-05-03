@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/sebps/terraform-generator/util"
+	"github.com/sebps/terraform-generator/parsing"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -51,7 +51,7 @@ func (d *Data) configurationCompletion(cmd *cobra.Command, args []string, toComp
 		dir = "."
 	}
 
-	configurations := util.ParseConfigurations(dir)
+	configurations := parsing.ParseConfigurations(dir)
 	for _, c := range configurations {
 		if strings.HasPrefix(c.Name, toComplete) {
 			results = append(results, c.Name)
