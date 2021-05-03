@@ -1,3 +1,5 @@
+terraform-generator
 test
 test/*
-terraform-generator
+dev
+dev/*
