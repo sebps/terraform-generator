@@ -1,8 +1,5 @@
 package commands
 
-// https: //registry.terraform.io/v1/providers
-// https: //registry.terraform.io/v1/modules
-
 import (
 	"github.com/sebps/terraform-generator/parsing"
 	"github.com/sebps/terraform-generator/terraform"
@@ -26,7 +23,7 @@ func (r *Resource) GetCommandNoons() []string {
 }
 
 func (r *Resource) GetCommandFlags() []string {
-	return []string{"dir", "name", "value", "configuration"}
+	return []string{"dir", "name", "type", "configuration"}
 }
 
 func (r *Resource) GetFlagCompletion(flag string) func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
@@ -46,9 +43,8 @@ func (r *Resource) GetNoonCompletion() func(*cobra.Command, []string, string) ([
 
 func (r *Resource) configurationCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var results []string
-	var dir string
 
-	dir = "."
+	dir := "."
 	if r.Dir != "" {
 		dir = r.Dir
 	} else {
