@@ -6,6 +6,7 @@ type Configuration struct {
 	Data          []*Data
 	DataTypes     []*Type
 	Modules       []*Module
+	Providers     []*Provider
 	Variables     []*Variable
 	Dir           string
 	Name          string

@@ -1,9 +1,12 @@
 package types
 
 type Provider struct {
-	Name string
+	Registry  string `default: "registry.terraform.io"`
+	Namespace string
+	Name      string
+	Version   string
 }
 
 func (p Provider) Flattify() string {
-	return "provider." + p.Name
+	return p.Namespace + "/" + p.Name
 }
