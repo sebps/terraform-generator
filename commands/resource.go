@@ -51,7 +51,7 @@ func (r *Resource) configurationCompletion(cmd *cobra.Command, args []string, to
 		dir = "."
 	}
 
-	configurations := parsing.ParseConfigurations(dir)
+	configurations := parsing.ParseLocalConfigurations(dir)
 	for _, c := range configurations {
 		if strings.HasPrefix(c.Name, toComplete) {
 			results = append(results, c.Name)

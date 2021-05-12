@@ -6,11 +6,15 @@ import (
 	"strings"
 )
 
-func ParseSchema(rawSchema string) []*types.ProviderSchema {
+func ParseProviderSchemas(rawSchema string) []*types.ProviderSchema {
 	var response map[string]interface{}
 	var providerSchemas []*types.ProviderSchema
 
 	json.Unmarshal([]byte(rawSchema), &response)
+
+	if response["provider_schemas"] == nil {
+		return providerSchemas
+	}
 
 	providerSchemasMap := response["provider_schemas"].(map[string]interface{})
 	for providerName, providerSchemaRaw := range providerSchemasMap {

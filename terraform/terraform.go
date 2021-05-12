@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"github.com/sebps/terraform-generator/parsing"
 	"github.com/sebps/terraform-generator/types"
-	"log"
 	"os/exec"
 )
 
@@ -19,8 +18,8 @@ func GetProviderSchemas() []*types.ProviderSchema {
 	cmd.Stdout = &out
 	err := cmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	return parsing.ParseSchema(out.String())
+	return parsing.ParseProviderSchemas(out.String())
 }

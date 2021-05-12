@@ -49,7 +49,7 @@ func (o *Output) valueCompletion(cmd *cobra.Command, args []string, toComplete s
 	}
 
 	typed := strings.Split(toComplete, ".")
-	configurations := parsing.ParseConfigurations(dir)
+	configurations := parsing.ParseLocalConfigurations(dir)
 
 	for _, c := range configurations {
 		if strings.HasPrefix(toComplete, "data.") {
