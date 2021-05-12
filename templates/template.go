@@ -1,17 +1,13 @@
 package templates
 
-import "strings"
+import (
+	"github.com/sebps/template-engine/rendering"
+)
 
 type Template struct {
 	structure string
 }
 
-func (t *Template) Parse(args map[string]string) string {
-	result := t.structure
-
-	for k, v := range args {
-		result = strings.ReplaceAll(result, "{{"+k+"}}", v)
-	}
-
-	return result
+func (t *Template) Render(args map[string]interface{}) string {
+	return rendering.Render(t.structure, args)
 }

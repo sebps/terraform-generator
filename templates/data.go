@@ -7,10 +7,10 @@ type Data struct {
 	template *Template
 }
 
-func (d *Data) Parse(args map[string]string) string {
+func (d *Data) Render(args map[string]interface{}) string {
 	d.template = &Template{
 		structure: resourceStructure,
 	}
 
-	return d.template.Parse(args)
+	return d.template.Render(args)
 }

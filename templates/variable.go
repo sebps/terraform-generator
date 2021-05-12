@@ -8,10 +8,10 @@ type Variable struct {
 	template *Template
 }
 
-func (v *Variable) Parse(args map[string]string) string {
+func (v *Variable) Render(args map[string]interface{}) string {
 	v.template = &Template{
-		structure: resourceStructure,
+		structure: variableStructure,
 	}
 
-	return v.template.Parse(args)
+	return v.template.Render(args)
 }

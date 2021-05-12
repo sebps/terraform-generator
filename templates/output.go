@@ -8,10 +8,10 @@ type Output struct {
 	template *Template
 }
 
-func (o *Output) Parse(args map[string]string) string {
+func (o *Output) Render(args map[string]interface{}) string {
 	o.template = &Template{
 		structure: outputStructure,
 	}
 
-	return o.template.Parse(args)
+	return o.template.Render(args)
 }

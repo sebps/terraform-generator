@@ -7,10 +7,10 @@ type Resource struct {
 	template *Template
 }
 
-func (r *Resource) Parse(args map[string]string) string {
+func (r *Resource) Render(args map[string]interface{}) string {
 	r.template = &Template{
 		structure: resourceStructure,
 	}
 
-	return r.template.Parse(args)
+	return r.template.Render(args)
 }
