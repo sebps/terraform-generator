@@ -38,11 +38,11 @@ terraform-generator data --type=aws_s3_bucket --name=static_website_bucket --mod
 This command will append a data block of type "aws_s3_bucket" and name "static_website_bucket" at the end of the modules/instance-configuration/main.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
 		data := &templates.Data{}
-		dArgs := map[string]string{
+		dArgs := map[string]interface{}{
 			"name": dataCommand.Name,
 			"type": dataCommand.Typ,
 		}
-		dataBlock := data.Parse(dArgs)
+		dataBlock := data.Render(dArgs)
 
 		if dataCommand.Dir == "" {
 			dataCommand.Dir = "."

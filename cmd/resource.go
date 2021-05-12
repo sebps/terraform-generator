@@ -40,11 +40,11 @@ terraform-generator resource --type=aws_s3_bucket --name=static_website_bucket -
 This command will append a resource block of type "aws_s3_bucket" and name "static_website_bucket" at the end of the modules/instance-configuration/main.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
 		resource := &templates.Resource{}
-		rArgs := map[string]string{
+		rArgs := map[string]interface{}{
 			"name": resourceCommand.Name,
 			"type": resourceCommand.Typ,
 		}
-		resourceBlock := resource.Parse(rArgs)
+		resourceBlock := resource.Render(rArgs)
 
 		if resourceCommand.Dir == "" {
 			resourceCommand.Dir = "."

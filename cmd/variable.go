@@ -40,11 +40,11 @@ terraform-generator variable --name=instance_name --type=string --dir=modules/in
 This command will append a variable block with name instance_name and type string at the end of the modules/instance-configuration/variables.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
 		variableTemplate := &templates.Variable{}
-		arguments := map[string]string{
+		arguments := map[string]interface{}{
 			"name": variableCommand.Name,
 			"type": variableCommand.Typ,
 		}
-		variableBlock := variableTemplate.Parse(arguments)
+		variableBlock := variableTemplate.Render(arguments)
 
 		if variableCommand.Dir == "" {
 			variableCommand.Dir = "."

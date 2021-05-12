@@ -40,11 +40,11 @@ terraform-generator output --dir=modules/instance-configuration --name=instance_
 This command will append an output block with name instance_ip_address and value module.instance_configuration.ip at the end of the modules/instance-configuration/outputs.tf `,
 	Run: func(cmd *cobra.Command, args []string) {
 		output := &templates.Output{}
-		oArgs := map[string]string{
+		oArgs := map[string]interface{}{
 			"name":  outputCommand.Name,
 			"value": outputCommand.Value,
 		}
-		outputBlock := output.Parse(oArgs)
+		outputBlock := output.Render(oArgs)
 
 		if outputCommand.Dir == "" {
 			outputCommand.Dir = "."
